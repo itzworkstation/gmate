@@ -22,6 +22,7 @@ gem 'kaminari'
 gem 'active_model_otp'
 gem 'sendgrid-ruby'
 gem 'faraday', '~> 1.5'
+gem 'mailtrap'
 
 
 
