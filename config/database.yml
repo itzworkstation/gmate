@@ -81,4 +81,4 @@ test:
 #
 production:
   <<: *default
-  url: <%= ENV['GMATE_PRODUCTION_DATABASE']
+  url: <%= ENV['GMATE_PRODUCTION_DATABASE'] %>
