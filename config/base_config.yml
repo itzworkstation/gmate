@@ -1,0 +1,63 @@
+Category:
+  Kitchen:
+    name: "Kitchen"
+    slug: "kitchen"
+    sub_categories:
+      spices_herbs:
+        name: "spices and herbs"
+        slug: "spices_herbs"
+      oils:
+        name: "oils and Ghee"
+        slug: "oils_ghee"
+      flours_rices:
+        name: "flours and rices"
+        slug: "flours_rices"
+      sugar_jaggery:
+        name: "sugar and jaggery"
+        slug: "sugar_jaggery"
+      pulses_legumes:
+        name: "pulses and legumes"
+        slug: "pulses_legumes"
+      dry_fruits:
+        name: "nuts and dry fruits"
+        slug: "nuts"
+  Laundry:
+    name: "Laundry"
+    slug: "laundry"
+    sub_categories:
+      detergent_powder:
+        name: "detergent powders"
+        slug: "detergent_powder"
+      detergent_cake:
+        name: "detergent cake"
+        slug: "detergent_cake"
+      others:
+        name: "others"
+        slug: "laundry_others"
+  Lavatory:
+    name: "Lavatory"
+    slug: "lavatory"
+    sub_categories:
+      cleaning:
+        name: "cleaning"
+        slug: "lavatory_cleaning"
+      bathing:
+        name: "bathing"
+        slug: "lavatory_bathing"
+      others:
+        name: "others"
+        slug: "lavatory_others"
+  Household:
+    name: "Household"
+    slug: "household"
+    sub_categories:
+      others:
+        name: "others"
+        slug: "household_others"
+  Miscellaneous:
+    name: "Miscellaneous"
+    slug: "miscellaneous"
+    sub_categories:
+      others:
+        name: "others"
+        slug: "miscellaneous_others"
