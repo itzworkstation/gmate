@@ -1,12 +1,12 @@
-require_relative "boot"
-require "rails/all"
+# frozen_string_literal: true
+
+require_relative 'boot'
+require 'rails/all'
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 # Load .env file in development and test environments
-if Rails.env.development? || Rails.env.test?
-  Dotenv.load
-end
+Dotenv.load if Rails.env.development? || Rails.env.test?
 
 module Gmate
   class Application < Rails::Application

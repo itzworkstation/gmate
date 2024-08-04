@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SendOtpEmailJob < ApplicationJob
   queue_as :default
   def perform(opts)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Api
   module V1
     class AccountsController < BaseController
@@ -22,15 +24,15 @@ module Api
         if account.save
           render json: AccountBlueprint.render(account, view: :token_response)
         else
-          render json: {error: account.errors.full_messages.join(',')}
+          render json: { error: account.errors.full_messages.join(',') }
         end
       end
 
       private
+
       def account_params
         params.require(:account).permit(:id, :name, :email, :phone)
       end
     end
   end
 end
-

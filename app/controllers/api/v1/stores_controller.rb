@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Api
   module V1
     class StoresController < BaseController
@@ -32,7 +34,7 @@ module Api
         if store.save
           render json: StoreBlueprint.render(store)
         else
-          render json: {error: store.errors.full_messages.join(',')}, status: :unprocessable_entity
+          render json: { error: store.errors.full_messages.join(',') }, status: :unprocessable_entity
         end
       end
 
@@ -45,7 +47,7 @@ module Api
         if store.update(store_params)
           render json: StoreBlueprint.render(store)
         else
-          render json: {error: store.errors.full_messages.join(',')}, status: :unprocessable_entity
+          render json: { error: store.errors.full_messages.join(',') }, status: :unprocessable_entity
         end
       end
 
@@ -54,10 +56,10 @@ module Api
       def add_product
         store_product = StoreProduct.new(product_id: set_product_id, store_id: params[:id])
         if store_product.save
-          render json: {message: 'Product added successfully'}, status: :ok
+          render json: { message: 'Product added successfully' }, status: :ok
         else
-          logger.error { "Could not save because "+ store_product.errors.full_messages[0] }
-          render json: {error: 'Could not add product in store'}, status: :unprocessable_entity
+          logger.error { "Could not save because #{store_product.errors.full_messages[0]}" }
+          render json: { error: 'Could not add product in store' }, status: :unprocessable_entity
         end
       end
 
@@ -66,13 +68,13 @@ module Api
       param :limit, Integer, required: false
       def products
         Store.find params[:id]
-        store_products= StoreProduct.includes(store: [], product: [:sub_category])
-        .where(store_id: params[:id])
-        .offset(0)
-        .limit(10)
-        .group_by { |store_product| store_product.product.sub_category&.name }
-        
-        response = store_products.map {|k,v| ["#{k}", StoreProductBlueprint.render_as_json(v)] }
+        store_products = StoreProduct.includes(store: [], product: [:sub_category])
+                                     .where(store_id: params[:id])
+                                     .offset(0)
+                                     .limit(10)
+                                     .group_by { |store_product| store_product.product.sub_category&.name }
+
+        response = store_products.map { |k, v| [k.to_s, StoreProductBlueprint.render_as_json(v)] }
         render json: response.to_h
       end
 
@@ -88,9 +90,13 @@ module Api
 
       def set_product_id
         name = params[:product][:name]
-        name.to_i > 0 ? name : create_subcategory_product(name: name, sub_category_id: params[:product][:sub_category_id])&.id
+        if name.to_i.positive?
+          name
+        else
+          create_subcategory_product(name: name,
+                                     sub_category_id: params[:product][:sub_category_id])&.id
+        end
       end
-      
     end
   end
 end
