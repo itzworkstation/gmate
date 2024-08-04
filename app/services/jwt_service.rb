@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # app/services/jwt_service.rb
 
 class JwtService

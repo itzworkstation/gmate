@@ -1,8 +1,12 @@
+# frozen_string_literal: true
+
 # app/services/msg_service.rb
 
 class MsgService
-  def self.send_otp(to:, otp_code: )
-    response = http_service.post('/dev/bulkV2', payload: {variables_values: otp_code, route: 'otp', numbers: to}, headers: {'Authorization'=> ENV['MSG_SECRET_KEY']})
+  def self.send_otp(to:, otp_code:)
+    response = http_service.post('/dev/bulkV2',
+                                 payload: { variables_values: otp_code, route: 'otp', numbers: to },
+                                 headers: { 'Authorization' => ENV['MSG_SECRET_KEY'] })
     if response.success?
       puts response.body
     else
