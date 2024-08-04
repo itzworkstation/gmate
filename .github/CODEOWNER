@@ -1,0 +1,5 @@
+# The CODEOWNERS file is used to define individuals or teams responsible for code in a repository.
+# Each line is a file pattern followed by one or more owners.
+
+# Specify owners for the entire repository
+*  snlkumar447@gmail.com
