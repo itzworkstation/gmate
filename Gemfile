@@ -23,7 +23,10 @@ gem 'active_model_otp'
 gem 'sendgrid-ruby'
 gem 'faraday', '~> 1.5'
 gem 'mailtrap'
-
+# lint gems
+gem 'bundler-audit'
+gem 'brakeman'
+gem 'rubocop'
 
 
 

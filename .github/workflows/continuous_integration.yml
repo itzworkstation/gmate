@@ -52,7 +52,7 @@ jobs:
       - name: Generate binstubs
         run: bundle binstubs bundler-audit brakeman rubocop
       # Add or replace any other lints here
-      - name: Security audit dependencies
+      - name: Security audit gems
         run: bin/bundler-audit --update
       - name: Security audit application code
         run: bin/brakeman -q -w2
