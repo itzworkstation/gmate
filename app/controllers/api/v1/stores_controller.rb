@@ -89,11 +89,11 @@ module Api
       end
 
       def set_product_id
-        name = params[:product][:name]
-        if name.to_i.positive?
-          name
+        product_name = params[:product][:name]
+        if product_name.to_i.positive?
+          product_name
         else
-          create_subcategory_product(name: name,
+          create_subcategory_product(name: product_name,
                                      sub_category_id: params[:product][:sub_category_id])&.id
         end
       end

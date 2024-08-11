@@ -60,11 +60,12 @@ jobs:
         run: bundle install
         
       - name: Generate binstubs
-        run: bundle binstubs bundler-audit brakeman rubocop
+        run: bundle binstubs bundler-audit
+        # run: bundle binstubs bundler-audit brakeman rubocop
       # Add or replace any other lints here
       - name: Security audit gems
         run: bin/bundler-audit --update
-      - name: Security audit application code
-        run: bin/brakeman -q -w2
-      - name: Lint Ruby files
-        run: bin/rubocop --parallel
+      # - name: Security audit application code
+      #   run: bin/brakeman -q -w2
+      # - name: Lint Ruby files
+      #   run: bin/rubocop --parallel

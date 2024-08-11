@@ -6,7 +6,7 @@ class MsgService
   def self.send_otp(to:, otp_code:)
     response = http_service.post('/dev/bulkV2',
                                  payload: { variables_values: otp_code, route: 'otp', numbers: to },
-                                 headers: { 'Authorization' => ENV['MSG_SECRET_KEY'] })
+                                 headers: { 'Authorization' => ENV.fetch('MSG_SECRET_KEY', nil) })
     if response.success?
       puts response.body
     else
