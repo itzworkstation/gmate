@@ -3,10 +3,10 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '3.0.6'
+ruby '3.2.5'
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem 'rails', '~> 7.0.8'
+gem 'rails', '~> 7.1.3', '>= 7.1.3.4'
 
 # Use postgresql as the database for Active Record
 gem 'pg', '~> 1.1'
@@ -20,7 +20,7 @@ gem 'faraday', '~> 1.5'
 gem 'jwt'
 gem 'kaminari'
 gem 'oj'
-gem 'puma', '~> 5.0'
+gem 'puma', '~> 6.0'
 gem 'sendgrid-ruby'
 gem 'sentry-rails'
 gem 'sentry-ruby'
@@ -62,7 +62,6 @@ end
 group :development do
   gem 'letter_opener'
   gem 'mailtrap'
-  
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   # gem "spring"
 end

@@ -18,13 +18,13 @@ class AccountOtpMailer < ApplicationMailer
           email: 'snlkumar1313@gmail.com'
         }
       ],
-      template_uuid: ENV['OTP_TEMPLATE_ID'],
+      template_uuid: ENV.fetch('OTP_TEMPLATE_ID', nil),
       template_variables: {
         'user_name' => 'sunil kumar',
         'otp_code' => '999999'
       }
     )
-    client = Mailtrap::Client.new(api_key: ENV['MAILER_API_KEY'])
+    client = Mailtrap::Client.new(api_key: ENV.fetch('MAILER_API_KEY', nil))
     client.send(mail)
   end
 end
