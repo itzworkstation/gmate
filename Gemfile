@@ -64,5 +64,7 @@ group :development do
   # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
   # gem "spring"
 end
+gem 'sprockets-rails', :require => 'sprockets/railtie'
+gem 'sass-rails'
 
 # b8de40d6de62148b59a5956d1bd12035
