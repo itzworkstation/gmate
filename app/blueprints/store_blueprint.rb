@@ -6,6 +6,6 @@ class StoreBlueprint < Blueprinter::Base
   fields :name
 
   field :products_count do |store, _options|
-    store.store_products.count
+    store.products_count
   end
 end
