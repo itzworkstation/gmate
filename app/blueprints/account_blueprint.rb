@@ -13,7 +13,7 @@ class AccountBlueprint < Blueprinter::Base
 
   view :token_response do
     field :token do |account, _options|
-      JwtService.encode({ id: account.id })
+      JwtService.encode({ account_id: account.id })
     end
     field :otp do |account, _options|
       account.otp_code(time: Time.now + 1.minute)

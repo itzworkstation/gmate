@@ -5,6 +5,7 @@ module Api
     class StoresController < BaseController
       include ProductConcern
       before_action :authorize_request
+      before_action :find_store, only: [:add_product, :update, :products, :destory]
       def_param_group :product do
         param :product, Hash, desc: '', required: true do
           param :name, String, desc: 'It can be string or product id', required: true
@@ -13,7 +14,7 @@ module Api
           param :brand_id, Integer, desc: 'Beand for a product', required: false
           param :dtf, Integer, desc: 'Days to finish it', required: false
           param :is_pack, :boolean, desc: 'It will be considered as one unit. Default: true', required: false
-          param :sub_category_id, Integer, desc: 'It is subcategory'
+          param :sub_category_id, Integer, desc: 'It is subcategory', required: true
         end
       end
 
@@ -26,11 +27,10 @@ module Api
 
       param :store, Hash, desc: 'Store params', required: true do
         param :name, String, desc: 'Store name', required: true
-        param :account_id, Integer, desc: 'Account id', required: true
       end
       api :POST, '/stores', 'Create a store'
       def create
-        store = Store.new(store_params)
+        store = Store.new(store_params.merge!(account_id: @current_account.id))
         if store.save
           render json: StoreBlueprint.render(store)
         else
@@ -43,18 +43,17 @@ module Api
       end
       api :PATCH, '/stores/{id}', 'Update a store'
       def update
-        store = Store.find(params[:id])
-        if store.update(store_params)
-          render json: StoreBlueprint.render(store)
+        if @store.update(store_params)
+          render json: StoreBlueprint.render(@store)
         else
-          render json: { error: store.errors.full_messages.join(',') }, status: :unprocessable_entity
+          render json: { error: @store.errors.full_messages.join(',') }, status: :unprocessable_entity
         end
       end
 
       api :POST, '/stores/:id/add_product', 'Add a product to store'
       param_group :product
       def add_product
-        store_product = StoreProduct.new(product_id: set_product_id, store_id: params[:id])
+        store_product = StoreProduct.new(product_id: set_product_id, store_id: @store.id)
         if store_product.save
           render json: { message: 'Product added successfully' }, status: :ok
         else
@@ -67,9 +66,8 @@ module Api
       param :offset, Integer, required: false
       param :limit, Integer, required: false
       def products
-        Store.find params[:id]
         store_products = StoreProduct.includes(store: [], product: [:sub_category])
-                                     .where(store_id: params[:id])
+                                     .where(store_id: @store.id)
                                      .offset(0)
                                      .limit(10)
                                      .group_by { |store_product| store_product.product.sub_category&.name }
@@ -81,7 +79,7 @@ module Api
       private
 
       def store_params
-        params.require(:store).permit(:id, :name, :account_id)
+        params.require(:store).permit(:id, :name)
       end
 
       def product_params
@@ -96,6 +94,14 @@ module Api
           create_subcategory_product(name: product_name,
                                      sub_category_id: params[:product][:sub_category_id])&.id
         end
+      end
+
+      def find_store
+        @store = Store.where(account_id: @current_account.id, id: params[:id]).first
+        if @store.nil?
+          return render json: { error: 'Invalid store' }, status: :unprocessable_entity 
+        end
+
       end
     end
   end

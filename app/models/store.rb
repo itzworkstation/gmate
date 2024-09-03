@@ -6,4 +6,8 @@ class Store < ApplicationRecord
   belongs_to :account, required: true
   has_many :store_products
   has_many :products, through: :store_products
+
+  def update_products_count
+    update(products_count: products.count)
+  end
 end
