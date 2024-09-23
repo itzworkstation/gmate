@@ -13,13 +13,13 @@ module Api
         end
       end
 
-      api :GET, '/sub_categories', 'Get a list of sub_category'
+      api :GET, '/v1/sub_categories', 'Get a list of sub_category'
       def index
         sub_categories = SubCategory.all
         render json: SubCategoryBlueprint.render(sub_categories, root: :sub_categories)
       end
 
-      api :POST, '/sub_categories', 'Create an account'
+      api :POST, '/v1/sub_categories', 'Create an account'
       param_group :sub_category
       def create
         category = SubCategory.new(sub_category_params)
