@@ -11,7 +11,11 @@ Rails.application.routes.draw do
   namespace :api, defaults: { format: 'json' } do
     namespace :v1 do
       constraints format: :json do
-        resources :accounts
+        resources :accounts do
+          collection do
+            post :verify_otp
+          end
+        end
         resources :categories
         resources :sub_categories
 

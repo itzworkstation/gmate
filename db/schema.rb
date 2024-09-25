@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_09_03_051642) do
+ActiveRecord::Schema[7.1].define(version: 2024_09_23_054542) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -22,6 +22,10 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_03_051642) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "otp_secret_key"
+    t.string "reference_code"
+    t.integer "referred_by_id"
+    t.index ["reference_code"], name: "index_accounts_on_reference_code"
+    t.index ["referred_by_id"], name: "index_accounts_on_referred_by_id"
   end
 
   create_table "brands", force: :cascade do |t|

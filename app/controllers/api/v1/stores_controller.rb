@@ -18,7 +18,7 @@ module Api
         end
       end
 
-      api :GET, '/stores', 'Get all the stores'
+      api :GET, '/v1/stores', 'Get all the stores'
       param :account_id, String, desc: 'Account id', required: false
       def index
         stores = @current_account.stores
@@ -28,7 +28,7 @@ module Api
       param :store, Hash, desc: 'Store params', required: true do
         param :name, String, desc: 'Store name', required: true
       end
-      api :POST, '/stores', 'Create a store'
+      api :POST, '/v1/stores', 'Create a store'
       def create
         store = Store.new(store_params.merge!(account_id: @current_account.id))
         if store.save
@@ -41,7 +41,7 @@ module Api
       param :store, Hash, desc: 'Store params', required: true do
         param :name, String, desc: 'Store name', required: true
       end
-      api :PATCH, '/stores/{id}', 'Update a store'
+      api :PATCH, '/v1/stores/{id}', 'Update a store'
       def update
         if @store.update(store_params)
           render json: StoreBlueprint.render(@store)
@@ -50,7 +50,7 @@ module Api
         end
       end
 
-      api :POST, '/stores/:id/add_product', 'Add a product to store'
+      api :POST, '/v1/stores/:id/add_product', 'Add a product to store'
       param_group :product
       def add_product
         store_product = StoreProduct.new(product_id: set_product_id, store_id: @store.id)
@@ -62,7 +62,7 @@ module Api
         end
       end
 
-      api :GET, '/stores/:id/products', 'Get all store products'
+      api :GET, '/v1/stores/:id/products', 'Get all store products'
       param :offset, Integer, required: false
       param :limit, Integer, required: false
       def products
