@@ -9,5 +9,5 @@ class StoreProductBlueprint < Blueprinter::Base
   field(:state) do |_sp, _options|
     'stocked'
   end
-  fields :measurement, :measurement_unit, :expire_days, :measurement_unit_count
+  fields :measurement, :measurement_unit, :used_in_days, :measurement_unit_count
 end

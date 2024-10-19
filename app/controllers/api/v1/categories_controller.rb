@@ -15,16 +15,18 @@ module Api
       api :GET, '/v1/categories', 'Get a list of categories'
       def index
         categories = Category.all
-        render json: CategoryBlueprint.render(categories, root: :categories)
+        render_success(CategoryBlueprint.render_as_json(categories), status: :ok, message: 'Success')
       end
 
-      api :POST, '/v1/categories', 'Create an account'
+      api :POST, '/v1/categories', 'Create a category'
       param_group :category
       def create
         category = Category.new(category_params)
-        return render json: CategoryBlueprint.render(category) if category.save
-
-        render json: { error: category.errors.full_messages }, status: :unprocessable_entity
+        if category.save
+          render_success(CategoryBlueprint.render_as_json(category), status: :ok, message: 'Success')
+        else
+          render_error(category.errors.full_messages.join(','), status: :unprocessable_entity)
+        end
       end
 
       private
