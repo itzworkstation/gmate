@@ -22,7 +22,7 @@ module Api
       param :account_id, String, desc: 'Account id', required: false
       def index
         stores = @current_account.stores
-        render json: StoreBlueprint.render(stores)
+        render_success(StoreBlueprint.render_as_json(stores), status: :ok, message: 'Success')
       end
 
       param :store, Hash, desc: 'Store params', required: true do
@@ -32,9 +32,9 @@ module Api
       def create
         store = Store.new(store_params.merge!(account_id: @current_account.id))
         if store.save
-          render json: StoreBlueprint.render(store)
+          render_success(StoreBlueprint.render_as_json(store), status: :ok, message: 'Success')
         else
-          render json: { error: store.errors.full_messages.join(',') }, status: :unprocessable_entity
+          render_error(store.errors.full_messages.join(','), status: :unprocessable_entity)
         end
       end
 
@@ -44,9 +44,9 @@ module Api
       api :PATCH, '/v1/stores/{id}', 'Update a store'
       def update
         if @store.update(store_params)
-          render json: StoreBlueprint.render(@store)
+          render_success(StoreBlueprint.render_as_json(@store), status: :ok, message: 'Success')
         else
-          render json: { error: @store.errors.full_messages.join(',') }, status: :unprocessable_entity
+          render_error(@store.errors.full_messages.join(','), status: :unprocessable_entity)
         end
       end
 
@@ -55,10 +55,10 @@ module Api
       def add_product
         store_product = StoreProduct.new(product_id: set_product_id, store_id: @store.id)
         if store_product.save
-          render json: { message: 'Product added successfully' }, status: :ok
+          render_success({}, status: :ok, message: 'Product added successfully')
         else
           logger.error { "Could not save because #{store_product.errors.full_messages[0]}" }
-          render json: { error: 'Could not add product in store' }, status: :unprocessable_entity
+          render_error('Could not add product in store', status: :unprocessable_entity)
         end
       end
 
@@ -73,7 +73,7 @@ module Api
                                      .group_by { |store_product| store_product.product.sub_category&.name }
 
         response = store_products.map { |k, v| [k.to_s, StoreProductBlueprint.render_as_json(v)] }
-        render json: response.to_h
+        render_success(response.to_h, status: :ok, message: 'Success')
       end
 
       private
