@@ -68,12 +68,12 @@ module Api
       def products
         store_products = StoreProduct.includes(store: [], product: [:sub_category])
                                      .where(store_id: @store.id)
-                                     .offset(0)
-                                     .limit(10)
+                                     .offset(params[:offset] || 0)
+                                     .limit(params[:limit] || 10)
                                      .group_by { |store_product| store_product.product.sub_category&.name }
 
-        response = store_products.map { |k, v| [k.to_s, StoreProductBlueprint.render_as_json(v)] }
-        render_success(response.to_h, status: :ok, message: 'Success')
+        response = store_products.map { |k, v| [[k.to_s, StoreProductBlueprint.render_as_json(v)]].to_h }
+        render_success(response, status: :ok, message: 'Success')
       end
 
       private
