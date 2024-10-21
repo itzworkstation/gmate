@@ -3,6 +3,7 @@
 module Api
   module V1
     class BaseController < ApplicationController
+      include Respondable
       rescue_from ActiveRecord::RecordNotFound, with: :handle_not_found
       rescue_from ActionController::ParameterMissing, with: :handle_parameter_missing
       rescue_from Apipie::ParamMissing, Apipie::ParamInvalid, Apipie::ParamMultipleMissing,

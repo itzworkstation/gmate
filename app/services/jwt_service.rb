@@ -3,7 +3,7 @@
 # app/services/jwt_service.rb
 
 class JwtService
-  HMAC_SECRET = Rails.application.secrets.secret_key_base
+  HMAC_SECRET = Rails.application.secrets.secret_key_base || ENV.fetch('SECRET_KEY_BASE', nil)
 
   def self.encode(payload, exp = 24.hours.from_now)
     payload[:exp] = exp.to_i

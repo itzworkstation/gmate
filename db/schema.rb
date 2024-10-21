@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_09_23_054542) do
+ActiveRecord::Schema[7.1].define(version: 2024_10_20_073717) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -26,6 +26,27 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_23_054542) do
     t.integer "referred_by_id"
     t.index ["reference_code"], name: "index_accounts_on_reference_code"
     t.index ["referred_by_id"], name: "index_accounts_on_referred_by_id"
+  end
+
+  create_table "active_admin_comments", force: :cascade do |t|
+    t.string "namespace"
+    t.text "body"
+    t.string "resource_type"
+    t.bigint "resource_id"
+    t.string "author_type"
+    t.bigint "author_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["author_type", "author_id"], name: "index_active_admin_comments_on_author"
+    t.index ["namespace"], name: "index_active_admin_comments_on_namespace"
+    t.index ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource"
+  end
+
+  create_table "admin_users", force: :cascade do |t|
+    t.string "email"
+    t.string "password_digest"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "brands", force: :cascade do |t|
@@ -56,7 +77,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_23_054542) do
   create_table "store_archived_products", force: :cascade do |t|
     t.bigint "product_id", null: false
     t.bigint "store_id", null: false
-    t.integer "used_in_days", default: 1
+    t.integer "days_to_consume", default: 1
     t.integer "actual_used_in_days", default: 10
     t.integer "state", default: 0
     t.integer "measurement"
@@ -67,6 +88,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_23_054542) do
     t.bigint "brand_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "expiry_date"
+    t.decimal "price", precision: 7, scale: 2
+    t.datetime "start_to_consume"
     t.index ["brand_id"], name: "index_store_archived_products_on_brand_id"
     t.index ["product_id"], name: "index_store_archived_products_on_product_id"
     t.index ["store_id"], name: "index_store_archived_products_on_store_id"
@@ -75,15 +99,17 @@ ActiveRecord::Schema[7.1].define(version: 2024_09_23_054542) do
   create_table "store_products", force: :cascade do |t|
     t.bigint "product_id", null: false
     t.bigint "store_id", null: false
-    t.integer "used_in_days", default: 2
+    t.integer "days_to_consume", default: 2
     t.integer "state", default: 0
-    t.datetime "opened_at"
+    t.datetime "start_to_consume"
     t.integer "measurement"
     t.integer "measurement_unit"
     t.integer "measurement_unit_count", default: 1
     t.bigint "brand_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "expiry_date"
+    t.decimal "price", precision: 7, scale: 2
     t.index ["brand_id"], name: "index_store_products_on_brand_id"
     t.index ["product_id"], name: "index_store_products_on_product_id"
     t.index ["store_id"], name: "index_store_products_on_store_id"

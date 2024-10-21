@@ -5,7 +5,7 @@ module Api
     class AccountsController < BaseController
       def_param_group :account do
         param :account, Hash, desc: 'account parameters', required: true do
-          param :name, String, desc: 'Account name', required: true
+          param :name, String, desc: 'Account name', required: false
           param :email, String, desc: 'Account email', required: false
           param :phone, String, desc: 'Phone link to account', required: true
         end
