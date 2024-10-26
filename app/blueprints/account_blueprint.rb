@@ -15,5 +15,9 @@ class AccountBlueprint < Blueprinter::Base
     field :token do |account, _options|
       JwtService.encode({ account_id: account.id })
     end
+
+    field :stores do |account, _options|
+      StoreBlueprint.render_as_json(account.stores)
+    end
   end
 end
