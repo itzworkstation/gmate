@@ -70,8 +70,9 @@ module Api
                                      .where(store_id: @store.id)
                                      .offset(params[:offset] || 0)
                                      .limit(params[:limit] || 10)
-                                     .group_by { |store_product| SubCategoryBlueprint.render_as_json(store_product.product.sub_category) }
-        response = store_products.map { |k, v|  k.merge!({products: StoreProductBlueprint.render_as_json(v)}) }
+                                    #  .group_by { |store_product| SubCategoryBlueprint.render_as_json(store_product.product.sub_category) }
+        # response = store_products.map { |k, v|  k.merge!({products: StoreProductBlueprint.render_as_json(v)}) }
+        response = store_products.map { |store_product| StoreProductBlueprint.render_as_json(store_product) }
         render_success(response, status: :ok, message: 'Success')
       end
 
