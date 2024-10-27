@@ -25,6 +25,7 @@ Rails.application.routes.draw do
             get :products
           end
         end
+        get 'brands', to: "sub_categories#brands"
       end
     end
   end

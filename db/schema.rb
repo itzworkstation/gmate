@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_10_20_073717) do
+ActiveRecord::Schema[7.1].define(version: 2024_10_27_045020) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -24,29 +24,19 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_20_073717) do
     t.string "otp_secret_key"
     t.string "reference_code"
     t.integer "referred_by_id"
+    t.string "language", default: "en"
     t.index ["reference_code"], name: "index_accounts_on_reference_code"
     t.index ["referred_by_id"], name: "index_accounts_on_referred_by_id"
   end
 
-  create_table "active_admin_comments", force: :cascade do |t|
-    t.string "namespace"
-    t.text "body"
-    t.string "resource_type"
-    t.bigint "resource_id"
-    t.string "author_type"
-    t.bigint "author_id"
+  create_table "brand_sub_categories", force: :cascade do |t|
+    t.bigint "brand_id", null: false
+    t.bigint "sub_category_id", null: false
+    t.boolean "is_active", default: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["author_type", "author_id"], name: "index_active_admin_comments_on_author"
-    t.index ["namespace"], name: "index_active_admin_comments_on_namespace"
-    t.index ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource"
-  end
-
-  create_table "admin_users", force: :cascade do |t|
-    t.string "email"
-    t.string "password_digest"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.index ["brand_id"], name: "index_brand_sub_categories_on_brand_id"
+    t.index ["sub_category_id"], name: "index_brand_sub_categories_on_sub_category_id"
   end
 
   create_table "brands", force: :cascade do |t|
@@ -135,6 +125,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_10_20_073717) do
     t.index ["category_id"], name: "index_sub_categories_on_category_id"
   end
 
+  add_foreign_key "brand_sub_categories", "brands"
+  add_foreign_key "brand_sub_categories", "sub_categories"
   add_foreign_key "store_archived_products", "products"
   add_foreign_key "store_archived_products", "stores"
   add_foreign_key "store_products", "products"
