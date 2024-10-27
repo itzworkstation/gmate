@@ -66,7 +66,7 @@ module Api
       param :offset, Integer, required: false
       param :limit, Integer, required: false
       def products
-        store_products = StoreProduct.includes(store: [], product: [:sub_category])
+        store_products = StoreProduct.includes(product: [:sub_category])
                                      .where(store_id: @store.id)
                                      .offset(params[:offset] || 0)
                                      .limit(params[:limit] || 10)
