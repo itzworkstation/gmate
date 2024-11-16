@@ -3,6 +3,7 @@
 module Api
   module V1
     class CategoriesController < BaseController
+      MEASUREMENT_UNITS = ['LTR', 'ML', 'KG', 'G']
       def_param_group :category do
         param :category, Hash, desc: 'category parameters', required: true do
           param :name, String, desc: 'Category name', required: true
@@ -13,9 +14,10 @@ module Api
       end
 
       api :GET, '/v1/categories', 'Get a list of categories'
+      param :q, String, desc: 'Search by query', required: false
       def index
-        categories = Category.all
-        render_success(CategoryBlueprint.render_as_json(categories), status: :ok, message: 'Success')
+        categories = Category.by_search(params[:q])
+        render_success({categories: CategoryBlueprint.render_as_json(categories), measurement_units: MEASUREMENT_UNITS}, status: :ok, message: 'Success')
       end
 
       api :POST, '/v1/categories', 'Create a category'
