@@ -3,6 +3,7 @@
 module Api
   module V1
     class StoresController < BaseController
+      PRODUCT_FILTER_OPTIONS = ['Early to finish', 'Available'].freeze
       include ProductConcern
       before_action :authorize_request
       before_action :find_store, only: [:add_product, :update, :products, :destory]
@@ -73,7 +74,7 @@ module Api
                                     #  .group_by { |store_product| SubCategoryBlueprint.render_as_json(store_product.product.sub_category) }
         # response = store_products.map { |k, v|  k.merge!({products: StoreProductBlueprint.render_as_json(v)}) }
         response = store_products.map { |store_product| StoreProductBlueprint.render_as_json(store_product) }
-        render_success(response, status: :ok, message: 'Success')
+        render_success({products: response, filters: PRODUCT_FILTER_OPTIONS}, status: :ok, message: 'Success')
       end
 
       private
