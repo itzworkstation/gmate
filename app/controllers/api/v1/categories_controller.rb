@@ -8,15 +8,18 @@ module Api
         param :category, Hash, desc: 'category parameters', required: true do
           param :name, String, desc: 'Category name', required: true
           param :slug, String, desc: 'Category slug', required: true
+          param :photo, File, desc: 'Photo', required: false
           param :is_active, :boolean, desc: 'Category is active or not. Default is active',
                                       required: false
         end
       end
 
       api :GET, '/v1/categories', 'Get a list of categories'
-      param :q, String, desc: 'Search by query', required: false
+      param :offset, Integer, required: false
+      param :limit, Integer, required: false
+      param :q, String, desc: 'search by query', required: false
       def index
-        categories = Category.by_search(params[:q])
+        categories = Category.search(params[:q]).offset(params[:offset] || 0).limit(params[:limit] || 10)
         render_success({categories: CategoryBlueprint.render_as_json(categories), measurement_units: MEASUREMENT_UNITS}, status: :ok, message: 'Success')
       end
 
@@ -34,7 +37,7 @@ module Api
       private
 
       def category_params
-        params.require(:category).permit(:id, :name, :slug, :is_active)
+        params.require(:category).permit(:id, :name, :slug, :is_active, :photo)
       end
     end
   end

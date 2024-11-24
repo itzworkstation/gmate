@@ -28,6 +28,10 @@ gem 'sentry-ruby'
 gem 'brakeman'
 gem 'bundler-audit'
 gem 'rubocop'
+gem 'google-cloud-storage'
+# gem 'image_processing', '~> 1.2'
+# gem 'ruby-vips'
+
 
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 # gem "jbuilder"
