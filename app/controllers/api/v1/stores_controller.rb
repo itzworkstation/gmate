@@ -11,9 +11,10 @@ module Api
         param :product, Hash, desc: '', required: true do
           param :name, String, desc: 'It can be string or product id', required: true
           param :measurement, Integer, desc: 'Measurement', required: false
-          param :measurement_unit, Integer, desc: 'Measurement unit', required: false
+          param :measurement_unit, String, desc: 'Measurement unit', required: false
           param :brand_id, Integer, desc: 'Beand for a product', required: false
-          param :dtf, Integer, desc: 'Days to finish it', required: false
+          param :days_to_consume, Integer, desc: 'Days to consume it', required: false
+          param :start_to_consume, String, desc: 'The date in YYYY-MM-DD format', required: false
           param :is_pack, :boolean, desc: 'It will be considered as one unit. Default: true', required: false
           param :sub_category_id, Integer, desc: 'It is subcategory', required: true
         end
@@ -54,7 +55,7 @@ module Api
       api :POST, '/v1/stores/:id/add_product', 'Add a product to store'
       param_group :product
       def add_product
-        store_product = StoreProduct.new(product_id: set_product_id, store_id: @store.id)
+        store_product = StoreProduct.new(sanitized_product_params)
         if store_product.save
           render_success({}, status: :ok, message: 'Product added successfully')
         else
@@ -79,6 +80,8 @@ module Api
 
       private
 
+
+
       def store_params
         params.require(:store).permit(:id, :name)
       end
@@ -87,14 +90,18 @@ module Api
         params.require(:product).permit(:id, :measurement, :measurement_unit, :brand_id, :dtf, :is_pack)
       end
 
-      def set_product_id
-        product_name = params[:product][:name]
-        if product_name.to_i.positive?
-          product_name
-        else
-          create_subcategory_product(name: product_name,
-                                     sub_category_id: params[:product][:sub_category_id])&.id
-        end
+      def product_params
+        params.require(:product).permit(:id, :name, :measurement, :measurement_unit, :brand_id, :sub_category_id, :days_to_consume, :is_pack, :brand_id, :start_to_consume, :expiry_date, :price)
+      end
+
+      def sanitized_product_params
+        product_name = product_params[:name]
+        product_id = product_name.to_i.positive? ? product_name : create_subcategory_product(name: product_name, sub_category_id: params[:product][:sub_category_id])&.id
+        attributes =  product_params.except(:sub_category_id, :name)
+        attributes[:product_id] =  product_id
+        attributes[:store_id] = @store.id
+        attributes[:measurement_unit] = StoreProduct.measurement_units.fetch(product_params[:measurement_unit].downcase, 0)
+        attributes
       end
 
       def find_store
@@ -102,7 +109,6 @@ module Api
         if @store.nil?
           return render json: { error: 'Invalid store' }, status: :unprocessable_entity 
         end
-
       end
     end
   end
