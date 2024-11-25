@@ -12,7 +12,7 @@ module Api
           param :name, String, desc: 'It can be string or product id', required: true
           param :measurement, Integer, desc: 'Measurement', required: false
           param :measurement_unit, String, desc: 'Measurement unit', required: false
-          param :brand_id, Integer, desc: 'Beand for a product', required: false
+          param :brand_id, String, desc: 'Brand for a product', required: false
           param :days_to_consume, Integer, desc: 'Days to consume it', required: false
           param :start_to_consume, String, desc: 'The date in YYYY-MM-DD format', required: false
           param :is_pack, :boolean, desc: 'It will be considered as one unit. Default: true', required: false
@@ -96,10 +96,12 @@ module Api
 
       def sanitized_product_params
         product_name = product_params[:name]
-        product_id = product_name.to_i.positive? ? product_name : create_subcategory_product(name: product_name, sub_category_id: params[:product][:sub_category_id])&.id
+        brand = product_params[:brand_id]
+        product_id = product_name.to_i.positive? ? product_name : create_subcategory_product(name: product_name, sub_category_id: product_params[:sub_category_id])&.id
         attributes =  product_params.except(:sub_category_id, :name)
         attributes[:product_id] =  product_id
         attributes[:store_id] = @store.id
+        attributes[:brand_id] = brand.to_i.positive? ? brand.to_i : create_subcategory_brand(name: brand, sub_category_id: product_params[:sub_category_id])
         attributes[:measurement_unit] = StoreProduct.measurement_units.fetch(product_params[:measurement_unit].downcase, 0)
         attributes
       end
