@@ -80,16 +80,7 @@ module Api
         render_success({products: response, filters: PRODUCT_FILTER_OPTIONS}, status: :ok, message: 'Success')
       end
 
-      api :GET, '/v1/stores/:store_id/products/:id', 'Get product detail'
-      def index
-        stores = @store.products.find_by
-        render_success(StoreBlueprint.render_as_json(stores), status: :ok, message: 'Success')
-      end
-
       private
-
-
-
       def store_params
         params.require(:store).permit(:id, :name)
       end
