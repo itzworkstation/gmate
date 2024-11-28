@@ -12,10 +12,9 @@ module Api
           param :name, String, desc: 'It can be string or product id', required: true
           param :measurement, Integer, desc: 'Measurement', required: false
           param :measurement_unit, String, desc: 'Measurement unit', required: false
-          param :brand_id, String, desc: 'Brand for a product', required: false
-          param :days_to_consume, Integer, desc: 'Days to consume it', required: false
-          param :start_to_consume, String, desc: 'The date in YYYY-MM-DD format', required: false
-          param :is_pack, :boolean, desc: 'It will be considered as one unit. Default: true', required: false
+          param :brand_id, String, desc: 'Brand for a product', required: false, allow_nil: true
+          param :days_to_consume, Integer, desc: 'Days to consume it', required: false, allow_nil: true
+          param :start_to_consume, String, desc: 'The date in YYYY-MM-DD format', required: false, allow_nil: true
           param :sub_category_id, Integer, desc: 'It is subcategory', required: true
         end
       end
@@ -67,15 +66,24 @@ module Api
       api :GET, '/v1/stores/:id/products', 'Get all store products'
       param :offset, Integer, required: false
       param :limit, Integer, required: false
+      param :sub_category_id, String, required: false
+      param :q, String, desc: 'search by query', required: false
       def products
-        store_products = StoreProduct.includes(product: [:sub_category])
-                                     .where(store_id: @store.id)
+        query = "store_products.store_id=#{ @store.id}"
+        query += " AND products.sub_category_id = #{params[:sub_category_id]}" if params[:sub_category_id].present?
+        query += " AND products.name ILIKE '%#{params[:q]}%' " if params[:q].present?
+        store_products = StoreProduct.includes(:product)
+                                     .where(query).references(:product)
                                      .offset(params[:offset] || 0)
                                      .limit(params[:limit] || 10)
-                                    #  .group_by { |store_product| SubCategoryBlueprint.render_as_json(store_product.product.sub_category) }
-        # response = store_products.map { |k, v|  k.merge!({products: StoreProductBlueprint.render_as_json(v)}) }
         response = store_products.map { |store_product| StoreProductBlueprint.render_as_json(store_product) }
         render_success({products: response, filters: PRODUCT_FILTER_OPTIONS}, status: :ok, message: 'Success')
+      end
+
+      api :GET, '/v1/stores/:store_id/products/:id', 'Get product detail'
+      def index
+        stores = @store.products.find_by
+        render_success(StoreBlueprint.render_as_json(stores), status: :ok, message: 'Success')
       end
 
       private
@@ -84,10 +92,6 @@ module Api
 
       def store_params
         params.require(:store).permit(:id, :name)
-      end
-
-      def product_params
-        params.require(:product).permit(:id, :measurement, :measurement_unit, :brand_id, :dtf, :is_pack)
       end
 
       def product_params
