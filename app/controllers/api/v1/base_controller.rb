@@ -32,7 +32,8 @@ module Api
       end
 
       def handle_not_found(exception)
-        render json: { error: exception.message }, status: :not_found
+        model_name = exception.model.constantize.name
+        render json: { error: "#{model_name} not found" }, status: :not_found
       end
 
       def handle_parameter_missing(exception)
