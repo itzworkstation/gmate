@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'active_support/core_ext/integer/time'
+Rails.application.routes.default_url_options[:host] = 'http://localhost:9000' # Replace with your domain in production
 
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
@@ -26,6 +27,7 @@ Rails.application.configure do
     config.public_file_server.headers = {
       'Cache-Control' => "public, max-age=#{2.days.to_i}"
     }
+    config.action_controller.perform_caching = true
   else
     config.action_controller.perform_caching = false
 

@@ -20,12 +20,12 @@ google:
   service: GCS
   project: "gmate-dev"
   bucket: "gmate_bucket-dev"
-  credentials: <%= Rails.root.join("config/gmate-dev-e59cb6e43ce9.json") %>
+  credentials: <%= ENV['GOOGLE_STORAGE_CREDENTIALS'] %>
 
 google_dev:
   service: GCS
-  project: Reviews-demo
-  credentials: <%= Rails.root.join("config/secrets/storage_admin.json") %>
+  project: gmate-dev
+  credentials: <%= ENV['GOOGLE_STORAGE_CREDENTIALS'] %>
   bucket: gmate_dev_bucket
 
 

@@ -14,8 +14,8 @@ module Api
       end
 
       api :GET, '/v1/categories', 'Get a list of categories'
-      param :offset, Integer, required: false
-      param :limit, Integer, required: false
+      param :offset, String, required: false
+      param :limit, String, required: false
       param :q, String, desc: 'search by query', required: false
       def index
         categories = Category.search(params[:q]).offset(params[:offset] || 0).limit(params[:limit] || 10)
@@ -36,7 +36,7 @@ module Api
       private
 
       def category_params
-        params.require(:category).permit(:id, :name, :slug, :is_active, :photo)
+        params.require(:category).permit(:id, :name, :slug, :is_active, :image)
       end
     end
   end
