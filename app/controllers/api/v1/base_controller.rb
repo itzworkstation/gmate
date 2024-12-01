@@ -18,7 +18,7 @@ module Api
           @decoded = JwtService.decode(header)
           @current_account = Account.find(@decoded[:account_id])
         rescue JWT::DecodeError
-          render json: { error: 'Unauthorized' }, status: :unauthorized
+          render_error('Unauthorized', status: :unauthorized)
         end
       end
 
@@ -28,16 +28,16 @@ module Api
         Rails.logger.error(exception.backtrace.join("\n"))
 
         # Return an appropriate error response
-        render json: { error: 'Internal Server Error' }, status: :internal_server_error
+        render_error('Internal Server Error', status: :internal_server_error)
       end
 
       def handle_not_found(exception)
         model_name = exception.model.constantize.name
-        render json: { error: "#{model_name} not found" }, status: :not_found
+        render_error("#{model_name} not found", status: :not_found)
       end
 
       def handle_parameter_missing(exception)
-        render json: { error: exception.message }, status: :unprocessable_entity
+        render_error(exception.message, status: :unprocessable_entity)
       end
     end
   end
