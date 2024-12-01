@@ -14,7 +14,7 @@ module Api
       api :GET, '/v1/accounts', 'Get a list of accounts'
       def index
         accounts = Account.all
-        render json: AccountBlueprint.render(accounts, view: :basic)
+        render_success(AccountBlueprint.render_as_json(accounts, view: :basic), status: :ok, message: 'Success')
       end
 
       api :POST, '/v1/accounts', 'Create an account'
@@ -24,9 +24,9 @@ module Api
         account.name = account.phone if account.name.nil?
         account.send_otp=true
         if account.save
-          render json: {message: 'otp has been sent'}
+          render_success({}, status: :ok, message: 'otp has been sent')
         else
-          render json: { error: account.errors.full_messages.join(',') }
+          render_error(account.errors.full_messages.join(','), status: :unprocessable_entity)
         end
       end
 
@@ -35,11 +35,11 @@ module Api
       param :otp, String, desc: 'Authentication otp', required: true
       def verify_otp
         account = Account.find_by(phone: params[:phone])
-        return render json: { error: 'Phone is invalid' } if account.nil?
+        return render_error('Phone is invalid', status: :unprocessable_entity) if account.nil?
         if account.validate_otp?(params[:otp])
-          render json: AccountBlueprint.render(account, view: :token_response)
+          render_success(AccountBlueprint.render_as_json(account, view: :token_response), status: :ok, message: 'Success')
         else
-          render json: { error: 'OTP is invalid or expired' }
+          render_error('OTP is invalid or expired', status: :unprocessable_entity)
         end
       end
 
