@@ -5,6 +5,7 @@ module Api
     class StoresController < BaseController
       PRODUCT_FILTER_OPTIONS = ['Early to finish', 'Available'].freeze
       include ProductConcern
+      include Pagination
       before_action :authorize_request
       before_action :find_store, only: [:add_product, :update, :products, :destory]
       def_param_group :product do
@@ -64,18 +65,14 @@ module Api
       end
 
       api :GET, '/v1/stores/:id/products', 'Get all store products'
-      param :offset, Integer, required: false
-      param :limit, Integer, required: false
+      # param :offset, Integer, required: false
+      # param :limit, Integer, required: false
       # param :sub_category_id, String, required: false
       # param :q, String, desc: 'search by query', required: false, allow_nil: true
       def products
-        query = "store_products.store_id=#{ @store.id}"
-        query += " AND products.sub_category_id = #{params[:sub_category_id]}" if params[:sub_category_id].present?
-        query += " AND products.name ILIKE '%#{params[:q]}%' " if params[:q].present?
-        store_products = StoreProduct.includes(:product)
-                                     .where(query).references(:product)
-                                     .offset(params[:offset] || 0)
-                                     .limit(params[:limit] || 10)
+        store_products = StoreProduct.includes(:product).filtered(@store.id, params[:category_id], params[:q])
+                                     .offset(offset)
+                                     .limit(limit)
         response = store_products.map { |store_product| StoreProductBlueprint.render_as_json(store_product) }
         render_success({products: response, filters: PRODUCT_FILTER_OPTIONS}, status: :ok, message: 'Success')
       end
