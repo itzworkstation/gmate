@@ -10,11 +10,11 @@ module Api
       def_param_group :product do
         param :product, Hash, desc: '', required: true do
           param :name, String, desc: 'It can be string or product id', required: true
-          param :measurement, Integer, desc: 'Measurement', required: false
-          param :measurement_unit, String, desc: 'Measurement unit', required: false
-          param :brand_id, String, desc: 'Brand for a product', required: false, allow_nil: true
-          param :days_to_consume, Integer, desc: 'Days to consume it', required: false, allow_nil: true
-          param :start_to_consume, String, desc: 'The date in YYYY-MM-DD format', required: false, allow_nil: true
+          # param :measurement, Integer, desc: 'Measurement', required: false
+          # param :measurement_unit, String, desc: 'Measurement unit', required: false
+          # param :brand_id, String, desc: 'Brand for a product', required: false, allow_nil: true
+          # param :days_to_consume, Integer, desc: 'Days to consume it', required: false, allow_nil: true
+          # param :start_to_consume, String, desc: 'The date in YYYY-MM-DD format', required: false, allow_nil: true
           param :sub_category_id, Integer, desc: 'It is subcategory', required: true
         end
       end
@@ -66,8 +66,8 @@ module Api
       api :GET, '/v1/stores/:id/products', 'Get all store products'
       param :offset, Integer, required: false
       param :limit, Integer, required: false
-      param :sub_category_id, String, required: false
-      param :q, String, desc: 'search by query', required: false
+      # param :sub_category_id, String, required: false
+      # param :q, String, desc: 'search by query', required: false, allow_nil: true
       def products
         query = "store_products.store_id=#{ @store.id}"
         query += " AND products.sub_category_id = #{params[:sub_category_id]}" if params[:sub_category_id].present?
