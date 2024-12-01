@@ -3,6 +3,7 @@
 module Api
   module V1
     class CategoriesController < BaseController
+      include Pagination
       def_param_group :category do
         param :category, Hash, desc: 'category parameters', required: true do
           param :name, String, desc: 'Category name', required: true
@@ -18,7 +19,7 @@ module Api
       param :limit, String, required: false
       param :q, String, desc: 'search by query', required: false
       def index
-        categories = Category.search(params[:q]).offset(params[:offset] || 0).limit(params[:limit] || 10)
+        categories = Category.search(params[:q]).offset(offset).limit(limit)
         render_success({categories: CategoryBlueprint.render_as_json(categories), measurement_units: StoreProduct.measurement_units.keys.map(&:upcase)}, status: :ok, message: 'Success')
       end
 

@@ -8,6 +8,16 @@ class StoreProduct < ApplicationRecord
   belongs_to :brand, required: false
   after_save :update_product_count
   after_destroy :update_product_count
+  scope :by_store, ->(store_id) { where(store_id: store_id) }
+  scope :by_category, ->(category_id) { joins(product: [sub_category: :category]).where(categories: { id: category_id }) }
+  scope :by_product_name, ->(q) { joins(:product).where("products.name ILIKE ?", "%#{q}%") }
+
+  scope :filtered, ->(store_id, category_id, q) {
+    by_store(store_id)
+      .then { |query| category_id.present? ? query.by_category(category_id) : query }
+      .then { |query| q.present? ? query.by_product_name(q) : query }
+  }
+
 
   def next_state
     states = StoreProduct.states.keys
