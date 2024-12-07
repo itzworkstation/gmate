@@ -61,7 +61,7 @@ module Api
         params.require(:account).permit(:id, :name, :email, :phone)
       end
       def update_params
-        params.require(:account).permit(:id, :name, :email, :language)
+        params.require(:account).permit(:id, :name, :email, :language, :image)
       end
     end
   end
