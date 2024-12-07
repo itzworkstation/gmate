@@ -4,7 +4,7 @@ module Api
   module V1
     class StoreProductsController < BaseController
       before_action :authorize_request
-      before_action :find_store
+      before_action :find_store, except: %i[barcode_product]
 
       def_param_group :product do
         param :product, Hash, desc: '', required: true do
@@ -17,6 +17,16 @@ module Api
       api :GET, '/v1/stores/:store_id/store_products/:id', 'Get store product detail'
       def show
         render_success({product: StoreProductBlueprint.render_as_json(@store_product), states: @store_product.all_next_states.map(&:upcase)}, status: :ok, message: 'Success')
+      end
+
+      api :GET, '/v1/stores/:store_id/product', 'Get store product detail by barcode'
+      def barcode_product
+        store_product =  StoreProduct.order("RANDOM()").first
+        if params[:barcode].present?
+          render_success({product: StoreProductBlueprint.render_as_json(store_product)}, status: :ok, message: 'Success')
+        else
+          render_error("Barcode is missing", status: :unprocessable_entity)
+        end
       end
 
       api :PUT, '/v1/stores/:store_id/store_products/:id', 'Update store product detail'
@@ -37,7 +47,7 @@ module Api
         if store.nil?
           return render json: { error: 'Invalid store' }, status: :unprocessable_entity 
         end
-        @store_product = store.store_products.find(params[:id])
+        @store_product = store.store_products.includes(:brand, product: [sub_category: :category]).find(params[:id])
       end
 
       def product_params

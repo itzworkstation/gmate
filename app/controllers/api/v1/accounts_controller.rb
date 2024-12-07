@@ -3,6 +3,7 @@
 module Api
   module V1
     class AccountsController < BaseController
+      before_action :authorize_request, only: [:update]
       def_param_group :account do
         param :account, Hash, desc: 'account parameters', required: true do
           param :name, String, desc: 'Account name', required: false
@@ -30,6 +31,15 @@ module Api
         end
       end
 
+      api :PUT, '/v1/accounts', 'Update an account'
+      def update
+        if @current_account.update(update_params)
+          render_success({}, status: :ok, message: 'Profile updated')
+        else
+          render_error(@current_account.errors.full_messages.join(','), status: :unprocessable_entity)
+        end
+      end
+      
       api :POST, '/v1/accounts/verify_otp', 'Verify an account'
       param :phone, String, desc: 'Phone link to account', required: true
       param :otp, String, desc: 'Authentication otp', required: true
@@ -49,6 +59,9 @@ module Api
 
       def account_params
         params.require(:account).permit(:id, :name, :email, :phone)
+      end
+      def update_params
+        params.require(:account).permit(:id, :name, :email, :language)
       end
     end
   end
