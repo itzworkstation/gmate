@@ -11,6 +11,10 @@ class AccountBlueprint < Blueprinter::Base
     fields :id, :is_active
   end
 
+  field :image_url do |product|
+    Rails.application.routes.default_url_options[:host] + '/assets/accounts/profile.jpeg'
+  end
+
   view :token_response do
     field :token do |account, _options|
       JwtService.encode({ account_id: account.id })

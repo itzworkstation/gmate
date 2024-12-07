@@ -2,6 +2,7 @@
 
 class Account < ApplicationRecord
   attr_accessor :send_otp
+  has_one_attached :image
   has_one_time_password
   OTP_EXPIRY_TIME = 3.minutes
   validates :phone, presence: true, no_tags: true

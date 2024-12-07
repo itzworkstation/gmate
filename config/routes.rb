@@ -11,9 +11,10 @@ Rails.application.routes.draw do
   namespace :api, defaults: { format: 'json' } do
     namespace :v1 do
       constraints format: :json do
-        resources :accounts do
+        resources :accounts, only: [:index, :create] do
           collection do
             post :verify_otp
+            put :update
           end
         end
         resources :categories
@@ -26,7 +27,9 @@ Rails.application.routes.draw do
           end
           resources :store_products
         end
+        get 'barcode_product', to: "store_products#barcode_product"
         get 'brands', to: "sub_categories#brands"
+        resources :reports, only: [:index]
       end
     end
   end

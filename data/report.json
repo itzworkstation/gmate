@@ -1,0 +1,54 @@
+{
+    "used": 
+        [   {
+            "name": "Kitchen",
+            "value": 50
+        },
+        {
+            "name": "Laundry",
+            "value": 30
+        },
+        {
+            "name": "Lavatory",
+            "value": 10
+        },
+        {
+            "name": "Household",
+            "value": 5
+        },
+        {
+            "name": "Cleaning",
+            "value": 4
+        },
+        {
+            "name": "Miscellaneous",
+            "value": 1
+        }
+    ],
+    "price": 
+        [   {
+            "name": "Kitchen",
+            "value": 2500
+        },
+        {
+            "name": "Laundry",
+            "value": 1000
+        },
+        {
+            "name": "Lavatory",
+            "value": 500
+        },
+        {
+            "name": "Household",
+            "value": 900
+        },
+        {
+            "name": "Cleaning",
+            "value": 700
+        },
+        {
+            "name": "Miscellaneous",
+            "value": 0
+        }
+    ]
+}
