@@ -16,7 +16,7 @@ module Api
           # param :brand_id, String, desc: 'Brand for a product', required: false, allow_nil: true
           # param :days_to_consume, Integer, desc: 'Days to consume it', required: false, allow_nil: true
           # param :start_to_consume, String, desc: 'The date in YYYY-MM-DD format', required: false, allow_nil: true
-          param :sub_category_id, Integer, desc: 'It is subcategory', required: true
+          # param :sub_category_id, Integer, desc: 'It is subcategory', required: true
         end
       end
 
