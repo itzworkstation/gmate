@@ -4,10 +4,12 @@ module Api
   module V1
     class StoresController < BaseController
       PRODUCT_FILTER_OPTIONS = ['Early to finish', 'Available'].freeze
+      include Pagy::Backend
       include ProductConcern
       include Pagination
       before_action :authorize_request
-      before_action :find_store, only: [:add_product, :update, :products, :destory]
+      before_action :find_store, only: [:add_product, :update, :products, :destory, :invoices, :upload_invoice]
+      
       def_param_group :product do
         param :product, Hash, desc: '', required: true do
           param :name, String, desc: 'It can be string or product id', required: true
@@ -70,11 +72,29 @@ module Api
       # param :sub_category_id, String, required: false
       # param :q, String, desc: 'search by query', required: false, allow_nil: true
       def products
+        # store_products = StoreProduct.includes(:product).filtered(@store.id, params[:category_id], params[:q])
+        #                              .offset(offset)
+        #                              .limit(limit)
         store_products = StoreProduct.includes(:product).filtered(@store.id, params[:category_id], params[:q])
-                                     .offset(offset)
-                                     .limit(limit)
+        pagy, store_products = pagy(store_products)
         response = store_products.map { |store_product| StoreProductBlueprint.render_as_json(store_product) }
-        render_success({products: response, filters: PRODUCT_FILTER_OPTIONS}, status: :ok, message: 'Success')
+        render_success({products: response, filters: PRODUCT_FILTER_OPTIONS, total_pages: pagy_metadata(pagy)[:last]}, status: :ok, message: 'Success')
+      end
+
+      def invoices
+        invoices = @store.invoices
+        pagy, records = pagy(invoices)
+        render_success({invoices: InvoiceBlueprint.render_as_json(records), total_pages: pagy_metadata(pagy)[:last]}, status: :ok, message: 'Success')
+      end
+
+      def upload_invoice
+        invoice = Invoice.new(invoice_params.merge!({store_id: @store.id}))
+        
+        if invoice.save
+          render_success(InvoiceBlueprint.render_as_json(invoice), status: :ok, message: 'Success')
+        else
+          render_error(invoice.errors.full_messages.join(','), status: :unprocessable_entity)
+        end
       end
 
       private
@@ -103,6 +123,10 @@ module Api
         if @store.nil?
           return render json: { error: 'Invalid store' }, status: :unprocessable_entity 
         end
+      end
+
+      def invoice_params
+        params.require(:invoice).permit(:attachments)
       end
     end
   end

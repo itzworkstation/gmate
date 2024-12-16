@@ -24,6 +24,8 @@ Rails.application.routes.draw do
           member do
             post :add_product
             get :products
+            get :invoices
+            post :upload_invoice
           end
           resources :store_products
         end
