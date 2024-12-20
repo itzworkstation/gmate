@@ -8,7 +8,7 @@ module Api
       include ProductConcern
       include Pagination
       before_action :authorize_request
-      before_action :find_store, only: [:add_product, :update, :products, :destory, :invoices, :upload_invoice]
+      before_action :find_store, only: [:add_product, :update, :products, :destory, :invoices, :upload_invoice, :destroy]
       
       def_param_group :product do
         param :product, Hash, desc: '', required: true do
@@ -94,6 +94,15 @@ module Api
           render_success(InvoiceBlueprint.render_as_json(invoice), status: :ok, message: 'Success')
         else
           render_error(invoice.errors.full_messages.join(','), status: :unprocessable_entity)
+        end
+      end
+
+      api :DELETE, '/v1/stores/:id', 'Delete store'
+      def destroy
+        if @store.destroy
+          render_success({}, status: :ok, message: 'Success')
+        else
+          render_error( @store.errors.full_messages.join(','), status: :unprocessable_entity)
         end
       end
 
