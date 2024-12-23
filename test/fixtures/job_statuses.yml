@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  job_id: MyString
+  status: MyString
+  error_message: MyText
+  job_statusable: one
+  job_statusable_type: Job statusable
+
+two:
+  job_id: MyString
+  status: MyString
+  error_message: MyText
+  job_statusable: two
+  job_statusable_type: Job statusable

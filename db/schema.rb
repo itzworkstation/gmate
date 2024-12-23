@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_12_14_050420) do
+ActiveRecord::Schema[7.1].define(version: 2024_12_23_073624) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -93,6 +93,17 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_14_050420) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["store_id"], name: "index_invoices_on_store_id"
+  end
+
+  create_table "job_statuses", force: :cascade do |t|
+    t.string "job_id"
+    t.string "status"
+    t.text "error_message"
+    t.string "job_statusable_type", null: false
+    t.bigint "job_statusable_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["job_statusable_type", "job_statusable_id"], name: "index_job_statuses_on_job_statusable"
   end
 
   create_table "products", force: :cascade do |t|

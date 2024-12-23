@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-
+require 'sidekiq/web'
 Rails.application.routes.draw do
   
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
@@ -36,4 +36,6 @@ Rails.application.routes.draw do
       end
     end
   end
+  # Sidekiq web interface (protected by HTTP basic auth in production)
+  mount Sidekiq::Web => '/sidekiq'
 end
