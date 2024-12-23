@@ -15,6 +15,7 @@ Rails.application.routes.draw do
           collection do
             post :verify_otp
             put :update
+            get :info
           end
         end
         resources :categories

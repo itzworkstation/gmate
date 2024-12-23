@@ -15,13 +15,13 @@ class AccountBlueprint < Blueprinter::Base
     Rails.application.routes.default_url_options[:host] + '/assets/accounts/profile.jpeg'
   end
 
+  field :stores do |account, _options|
+    StoreBlueprint.render_as_json(account.stores)
+  end
+
   view :token_response do
     field :token do |account, _options|
       JwtService.encode({ account_id: account.id })
-    end
-
-    field :stores do |account, _options|
-      StoreBlueprint.render_as_json(account.stores)
     end
   end
 end
