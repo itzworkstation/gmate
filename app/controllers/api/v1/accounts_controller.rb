@@ -3,7 +3,7 @@
 module Api
   module V1
     class AccountsController < BaseController
-      before_action :authorize_request, only: [:update]
+      before_action :authorize_request, only: [:update, :info]
       def_param_group :account do
         param :account, Hash, desc: 'account parameters', required: true do
           param :name, String, desc: 'Account name', required: false
@@ -53,8 +53,11 @@ module Api
         end
       end
 
-
-
+      api :GET, '/v1/accounts/info', 'Get account info'
+      def info
+        render_success(AccountBlueprint.render_as_json(@current_account), status: :ok, message: 'Success')
+      end
+      
       private
 
       def account_params
