@@ -18,8 +18,8 @@ local:
 # config/storage.yml
 google:
   service: GCS
-  project: "gmate-dev"
-  bucket: "gmate_bucket-dev"
+  project: gmate-prod
+  bucket: gmate_prod_bucket
   credentials: <%= ENV['GOOGLE_STORAGE_CREDENTIALS'] %>
 
 google_dev:

@@ -30,8 +30,9 @@ gem 'bundler-audit'
 gem 'rubocop'
 gem 'google-cloud-storage'
 gem 'pagy'
-
-# gem 'image_processing', '~> 1.2'
+gem 'sidekiq'
+gem 'sidekiq-unique-jobs', '~> 8.0'
+gem 'image_processing', '~> 1.2'
 # gem 'ruby-vips'
 
 
