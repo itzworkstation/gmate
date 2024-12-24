@@ -32,8 +32,8 @@ gem 'google-cloud-storage'
 gem 'pagy'
 gem 'sidekiq'
 gem 'sidekiq-unique-jobs', '~> 8.0'
-# gem 'image_processing', '~> 1.2'
-# gem 'ruby-vips'
+gem 'image_processing', '~> 1.2'
+gem 'ruby-vips'
 
 
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]

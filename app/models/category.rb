@@ -1,11 +1,15 @@
 # frozen_string_literal: true
 
 class Category < ApplicationRecord
-  has_one_attached :image
+  has_one_attached :image do |attachable|
+    attachable.variant :thumbnail, resize_to_limit: [100, 100]
+  end
   validates :name, presence: true, no_tags: true
   validates :slug, :name, uniqueness: true
   has_many :sub_categories, dependent: :destroy
-  # after_commit :enqueue_upload_to_google_cloud , on: :create
+  after_commit :generate_variants, if: -> { image.attached? }
+
+  
 
   scope :search, ->(query) {
     where("name ILIKE :query", query: "%#{query}%") if query.present?
@@ -20,6 +24,12 @@ class Category < ApplicationRecord
   end
 
   private
+
+  def generate_variants
+    # Generate and store the thumbnail variant
+    GenerateVariantJob.perform_later(self.id)
+    # image.variant(:thumbnail).processed
+  end
 
   def enqueue_upload_to_google_cloud
     return unless image_attached?
