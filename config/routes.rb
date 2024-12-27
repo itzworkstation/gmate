@@ -25,7 +25,7 @@ Rails.application.routes.draw do
           member do
             post :add_product
             get :products
-            get :invoices
+            get :invoices, :notifications
             post :upload_invoice
           end
           resources :store_products
