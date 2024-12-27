@@ -27,7 +27,7 @@ class Category < ApplicationRecord
 
   def generate_variants
     # Generate and store the thumbnail variant
-    GenerateVariantJob.perform_later(self.id)
+    GenerateVariantJob.perform_later(self.id, 'category')
     # image.variant(:thumbnail).processed
   end
 

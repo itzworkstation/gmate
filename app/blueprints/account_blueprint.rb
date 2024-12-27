@@ -11,7 +11,9 @@ class AccountBlueprint < Blueprinter::Base
     fields :id, :is_active
   end
 
-  field :image_url do |product|
+  field :image_url do |acc|
+    acc.image_thumbnail.url
+    rescue
     Rails.application.routes.default_url_options[:host] + '/assets/accounts/profile.jpeg'
   end
 

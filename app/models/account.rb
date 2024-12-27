@@ -2,7 +2,9 @@
 
 class Account < ApplicationRecord
   attr_accessor :send_otp
-  has_one_attached :image
+  has_one_attached :image do |attachable|
+    attachable.variant :thumbnail, resize_to_limit: [100, 100]
+  end
   has_one_time_password
   OTP_EXPIRY_TIME = 3.minutes
   validates :phone, presence: true, no_tags: true
@@ -16,12 +18,19 @@ class Account < ApplicationRecord
   has_many :stores, dependent: :destroy
   after_commit :send_otp_with_email
   before_create :generate_reference_code
+  after_commit :generate_variants, if: -> { image.attached? }
 
   def validate_otp?(otp)
     authenticate_otp(otp, drift: OTP_EXPIRY_TIME)
   end
 
   private
+
+  def generate_variants
+    # Generate and store the thumbnail variant
+    GenerateVariantJob.perform_later(self.id, 'account')
+    # image.variant(:thumbnail).processed
+  end
 
   def send_otp_with_email
     otp = otp_code
