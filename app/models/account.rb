@@ -24,8 +24,6 @@ class Account < ApplicationRecord
     authenticate_otp(otp, drift: OTP_EXPIRY_TIME)
   end
 
-  private
-
   def image_thumbnail
     Rails.cache.fetch("account_#{self.cache_version}_thumbnail") do
       image.variant(resize_to_limit: [100, 100]).processed if self.image.attached?
@@ -33,6 +31,8 @@ class Account < ApplicationRecord
     rescue
       puts "thumbnail failed for account"
   end
+
+  private
 
   def generate_variants
     # Generate and store the thumbnail variant
