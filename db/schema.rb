@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_12_23_073624) do
+ActiveRecord::Schema[7.1].define(version: 2024_12_24_103822) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -106,6 +106,15 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_23_073624) do
     t.index ["job_statusable_type", "job_statusable_id"], name: "index_job_statuses_on_job_statusable"
   end
 
+  create_table "notifications", force: :cascade do |t|
+    t.string "message"
+    t.bigint "store_id", null: false
+    t.boolean "read", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["store_id"], name: "index_notifications_on_store_id"
+  end
+
   create_table "products", force: :cascade do |t|
     t.string "name", null: false
     t.string "slug", null: false
@@ -181,6 +190,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_12_23_073624) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "brand_sub_categories", "brands"
   add_foreign_key "brand_sub_categories", "sub_categories"
+  add_foreign_key "notifications", "stores"
   add_foreign_key "store_archived_products", "products"
   add_foreign_key "store_archived_products", "stores"
   add_foreign_key "store_products", "products"

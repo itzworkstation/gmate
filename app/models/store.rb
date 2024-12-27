@@ -7,6 +7,7 @@ class Store < ApplicationRecord
   has_many :store_products, dependent: :destroy
   has_many :products, through: :store_products
   has_many :invoices, dependent: :destroy
+  has_many :notifications, dependent: :destroy
 
   def update_products_count
     update(products_count: products.count)

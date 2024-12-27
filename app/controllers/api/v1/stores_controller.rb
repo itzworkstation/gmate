@@ -8,7 +8,7 @@ module Api
       include ProductConcern
       include Pagination
       before_action :authorize_request
-      before_action :find_store, only: [:add_product, :update, :products, :destory, :invoices, :upload_invoice, :destroy]
+      before_action :find_store, only: [:add_product, :update, :products, :destory, :invoices, :upload_invoice, :destroy, :notifications]
       
       def_param_group :product do
         param :product, Hash, desc: '', required: true do
@@ -87,6 +87,12 @@ module Api
         render_success({invoices: InvoiceBlueprint.render_as_json(records), total_pages: pagy_metadata(pagy)[:last]}, status: :ok, message: 'Success')
       end
 
+      def notifications
+        messages = @store.notifications
+        pagy, records = pagy(messages)
+        render_success({invoices: NotificationBlueprint.render_as_json(records), total_pages: pagy_metadata(pagy)[:last]}, status: :ok, message: 'Success')
+      end
+
       def upload_invoice
         invoice = Invoice.new(invoice_params.merge!({store_id: @store.id}))
         
@@ -135,7 +141,7 @@ module Api
       end
 
       def invoice_params
-        params.require(:invoice).permit(:attachments)
+        params.require(:invoice).permit(:attachment)
       end
     end
   end
