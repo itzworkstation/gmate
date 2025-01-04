@@ -11,6 +11,12 @@ Rails.application.routes.draw do
   namespace :api, defaults: { format: 'json' } do
     namespace :v1 do
       constraints format: :json do
+        namespace :admin do
+          post 'login', to: "accounts#login"
+          get 'accounts', to: "accounts#index"
+          resources :categories
+          resources :brands
+        end
         resources :accounts, only: [:index, :create] do
           collection do
             post :verify_otp

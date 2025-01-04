@@ -16,11 +16,15 @@ class Category < ApplicationRecord
   }
 
   def image_thumbnail
-    Rails.cache.fetch("category_#{self.cache_version}_thumbnail") do
-      image.variant(resize_to_limit: [100, 100]).processed if image_attached?
+    if self.image.attached?      
+      begin
+        varient_image = self.image.variant(resize_to_limit: [100, 100]).processed
+        varient_image.service.url(varient_image.key, expires_in: 24.hours, filename: varient_image.filename, content_type: varient_image.content_type, disposition: 'attachment')
+      rescue
+          puts "thumbnail failed for account"
+        Rails.application.routes.default_url_options[:host] + '/assets/categories/kitchen@3x.png'
+      end 
     end
-    rescue
-      puts "delete #{name}"
   end
 
   private
