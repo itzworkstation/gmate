@@ -34,10 +34,24 @@ module Api
         end
       end
 
+      api :PUT, '/v1/categories/:id', 'Update a category'
+      def update
+        category = Category.find params[:id]
+        if category.update(update_params)
+          render_success(CategoryBlueprint.render_as_json(category), status: :ok, message: 'Profile updated')
+        else
+          render_error(category.errors.full_messages.join(','), status: :unprocessable_entity)
+        end
+      end
+
       private
 
       def category_params
         params.require(:category).permit(:id, :name, :slug, :is_active, :image)
+      end
+
+      def update_params
+        params.require(:category).permit(:id, :is_active, :image)
       end
     end
   end
