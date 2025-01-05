@@ -141,7 +141,7 @@ module Api
       end
 
       def invoice_params
-        params.require(:invoice).permit(:attachment)
+        params.require(:invoice).permit!
       end
     end
   end
