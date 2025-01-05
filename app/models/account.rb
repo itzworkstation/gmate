@@ -25,11 +25,15 @@ class Account < ApplicationRecord
   end
 
   def image_thumbnail
-    Rails.cache.fetch("account_#{self.cache_version}_thumbnail") do
-      image.variant(resize_to_limit: [100, 100]).processed if self.image.attached?
+    if self.image.attached?      
+      begin
+        varient_image = self.image.variant(resize_to_limit: [100, 100]).processed
+        varient_image.service.url(varient_image.key, expires_in: 24.hours, filename: varient_image.filename, content_type: varient_image.content_type, disposition: 'attachment')
+      rescue
+          puts "thumbnail failed for account"
+        Rails.application.routes.default_url_options[:host] + '/assets/accounts/profile.jpeg'
+      end 
     end
-    rescue
-      puts "thumbnail failed for account"
   end
 
   private
