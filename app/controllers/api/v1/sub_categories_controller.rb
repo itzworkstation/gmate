@@ -18,7 +18,7 @@ module Api
       param :q, String, desc: 'search by query', required: false
       def index
         sub_categories = SubCategory.by_category_and_search(params[:category_id], params[:q])
-        render_success(CategoryBlueprint.render_as_json(sub_categories), status: :ok, message: 'Success')
+        render_success(SubCategoryBlueprint.render_as_json(sub_categories), status: :ok, message: 'Success')
       end
 
       api :POST, '/v1/sub_categories', 'Create an account'
@@ -26,7 +26,7 @@ module Api
       def create
         sub_category = SubCategory.new(sub_category_params)
         if sub_category.save
-          render_success(CategoryBlueprint.render_as_json(sub_category), status: :ok, message: 'Success')
+          render_success(SubCategoryBlueprint.render_as_json(sub_category), status: :ok, message: 'Success')
         else
           render_error(sub_category.errors.full_messages.join(','), status: :unprocessable_entity)
         end
